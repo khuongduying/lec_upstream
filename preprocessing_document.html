@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>preprocessing_document.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="dna-seq-pre-processing-wgs-data-upstream-analysis">DNA-seq: Pre-processing WGS data (Upstream analysis)</h1>
+<h2 id="table-of-contents">TABLE OF CONTENTS</h2>
+<ol start="0">
+<li>
+<p>Preparation</p>
+<ul>
+<li>Setup working directory</li>
+<li>Download Data: Raw fastq &amp; Reference genome data</li>
+<li>Tools (Install tools)</li>
+</ul>
+</li>
+<li>
+<p>Introduction</p>
+<ul>
+<li>Concept</li>
+<li>Workflow</li>
+</ul>
+</li>
+<li>
+<p>Raw Data Processing</p>
+<ul>
+<li>
+<p>Introduce to FastQ files</p>
+<ul>
+<li>File Format</li>
+<li>Base Quality score (Q score)</li>
+<li>Illumina FASTQ file naming scheme</li>
+<li>Illumina FASTQ read naming scheme</li>
+</ul>
+</li>
+<li>
+<p>Sequencing quality control (FastQC)</p>
+<ul>
+<li>🌟 [Hands-on]: Check FastQC</li>
+<li>Base Quality (Q score),</li>
+<li>Nucleotide distribution.</li>
+<li>GC Contents distribution.</li>
+<li>Duplication rate.</li>
+<li>K-mer contents</li>
+<li>Per tile sequence quality.</li>
+</ul>
+</li>
+<li>
+<p>Read trimming and filtering (Trimmomatic)</p>
+<ul>
+<li>🌟 [Hands-on]: Trimming raw data</li>
+<li>Quality trimming</li>
+<li>Adapter trimming</li>
+<li>Trimmomatic for single-end (SE) reads</li>
+<li>Trimmomatic for paired-end (PE) reads.</li>
+<li><em>Is trimming really necessary now a day?</em></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Alignment: Mapping reads to reference genome</p>
+<ul>
+<li>🌟 [Hands-on]: Align with BWA mem</li>
+<li>Introduce to SAM/BAM file</li>
+<li>Read mapping (BWA mem)</li>
+<li>Sorting and Indexing</li>
+<li>Mapping quality</li>
+</ul>
+</li>
+<li>
+<p>Mapped reads post-processing (with Picard tools)</p>
+<ul>
+<li>
+<p>🌟 [Hands-on]: Picard tools</p>
+</li>
+<li>
+<p>Validating the SAM/BAM file</p>
+</li>
+<li>
+<p>Sorting and marking duplicate, inxdexing the BAM file</p>
+</li>
+<li>
+<p>SortSam</p>
+</li>
+<li>
+<p>MarkDuplicates</p>
+</li>
+<li>
+<p>Realignment</p>
+</li>
+<li>
+<p>Base Quality Score Recalibration</p>
+</li>
+<li>
+<p>Filtering on mapped reads properties</p>
+</li>
+<li>
+<p>Removing duplicate reads</p>
+</li>
+<li>
+<p>Left-align reads around indels</p>
+</li>
+<li>
+<p>Recalibrate read mapping quality</p>
+</li>
+<li>
+<p>Refilter reads based on mapping quality</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Alignment Data: Quality Control</p>
+<ul>
+<li>Coverage Analysis
+<ul>
+<li>BED format</li>
+<li>Coverage analysis with BEDTools</li>
+</ul>
+</li>
+<li>Coverage Plot in R</li>
+</ul>
+</li>
+<li>
+<p>Preferences</p>
+</li>
+</ol>
+<h1 id=""></h1>
+<h1 id="0-preparation">0. Preparation</h1>
+<h2 id="setup-working-directory">Setup working directory</h2>
+<p>Create directories and structurize our workplace.
+Create directories and structurize our workplace.</p>
+<pre class="hljs"><code><div>mkdir dnaseq_work/
+
+<span class="hljs-built_in">cd</span> dnaseq_work/
+mkdir tools/ work/
+
+<span class="hljs-built_in">cd</span> work/
+mkdir 1_raw/ 2_trim/ 3_align/
+mkdir ref_genome
+
+mkdir -p 1_raw/sample1/ 1_raw/sample2
+mkdir -p 2_trim/sample1/ 2_trim/sample2/
+mkdir -p 3_align/sample1/ 3_align/sample2/
+</div></code></pre>
+<p>Install &quot;tree&quot; tools to view better:</p>
+<pre class="hljs"><code><div>sudo apt install tree
+</div></code></pre>
+<p>And here is what our working directory looks like:</p>
+<pre class="hljs"><code><div>tree dnaseq_work/
+<span class="hljs-comment">#</span>
+dnaseq_work/
+├── tools
+└── work
+    ├── 1_raw
+    ├── 2_trim
+    ├── 3_align
+    └── ref_genome
+</div></code></pre>
+<h2 id="setup-path">Setup Path</h2>
+<p>Make some shortcuts for paths to access easier.</p>
+<pre class="hljs"><code><div><span class="hljs-comment">#PATH</span>
+p_raw=<span class="hljs-string">'/home/duydao/dnaseq_work/work/1_raw'</span>
+p_trim=<span class="hljs-string">'/home/duydao/dnaseq_work/work/2_trim'</span>
+p_align=<span class="hljs-string">'/home/duydao/dnaseq_work/work/3_align'</span>
+p_ref=<span class="hljs-string">'/home/duydao/dnaseq_work/work/ref_genome'</span>
+
+<span class="hljs-comment">#PATH TO TOOLS</span>
+p_tools=<span class="hljs-string">'/home/duydao/dnaseq_work/tools'</span>
+
+</div></code></pre>
+<p>~~</p>
+<h2 id="download-data-raw-fastq--reference-genome-data">Download Data: Raw fastq &amp; Reference genome data</h2>
+<h3 id="download-raw-fastq">Download raw fastq:</h3>
+<p>For the scope of this lecture, we will working on 2 samples</p>
+<pre class="hljs"><code><div><span class="hljs-built_in">cd</span> 1_raw
+mkdir sample1/ sample2/
+</div></code></pre>
+<p><strong>Sample1</strong></p>
+<pre class="hljs"><code><div>LowQuality_Reads.fastq.gz
+</div></code></pre>
+<p><strong>Sample2</strong></p>
+<p>Download link:
+https://ftp.ncbi.nlm.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R1_001.fastq.gz</p>
+<p>https://ftp.ncbi.nlm.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R2_001.fastq.gz</p>
+<p>Or use command lines:</p>
+<pre class="hljs"><code><div><span class="hljs-built_in">cd</span> sample2/
+
+sudo apt install lftp
+
+lftp -e <span class="hljs-string">"pget -n 20 ftp://ftp-trace.ncbi.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R1_001.fastq.gz; bye"</span>
+
+lftp -e <span class="hljs-string">"pget -n 20 ftp://ftp-trace.ncbi.nih.gov/giab/ftp/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L001_R2_001.fastq.gz; bye"</span>
+</div></code></pre>
+<p><strong>Reference genome</strong></p>
+<p>Download link:
+https://hgdownload-test.gi.ucsc.edu/goldenPath/hg38/bigZips/analysisSet/hg38.fullAnalysisSet.chroms.tar.gz</p>
+<p>Or use command lines:</p>
+<pre class="hljs"><code><div><span class="hljs-built_in">cd</span> ref_genome/
+
+wget https://hgdownload-test.gi.ucsc.edu/goldenPath/hg38/bigZips/analysisSet/hg38.fullAnalysisSet.chroms.tar.gz
+
+tar xvzf hg38.fullAnalysisSet.chroms.tar.gz
+
+<span class="hljs-built_in">cd</span> hg38.fullAnalysisSet.chroms
+cat *.fa &gt; hs38DH.fa
+mv hs38DH.fa ../
+
+<span class="hljs-comment"># We just need hs38DH.fa. All the unnessesary files could be removed.</span>
+rm -rf  hg38.fullAnalysisSet.chroms
+</div></code></pre>
+<p>Index the reference genome (take a long time)</p>
+<pre class="hljs"><code><div>bwa index -a bwtsw hs38DH.fa
+</div></code></pre>
+<h1 id=""></h1>
+<h1 id="1-introduction">1. Introduction</h1>
+<h2 id="concept">Concept</h2>
+<p>(Write some description about the need to Preprocessing raw data &amp; do Upstream Analysis)
+<img src="https://datacarpentry.org/wrangling-genomics/img/variant_calling_workflow.png" alt=""></p>
+<p>......</p>
+<h2 id="workflow">Workflow</h2>
+<p>(A map for Upstream Analysis procedure)</p>
+<h1 id="2-raw-data-processing">2. Raw Data Processing</h1>
+<h2 id="introduce-to-fastq-files">Introduce to FastQ files</h2>
+<p>https://en.wikipedia.org/wiki/FASTQ_format</p>
+<h3 id="file-format">File format</h3>
+<p><img src="https://www.drive5.com/usearch/manual9.2/fastq_fig.jpg" alt="fastq format"></p>
+<pre class="hljs"><code><div>@&lt;title and optional description&gt;
+&lt;sequence line&gt;
++&lt;optional repeat of title line&gt;
+&lt;quality line&gt;
+</div></code></pre>
+<h3 id="illumina-fastq-file-naming-scheme">Illumina FASTQ file naming scheme</h3>
+<p>Example file name</p>
+<blockquote>
+<p>NIST7035_TAAGGCGA_L001_R1_001.fastq.gz</p>
+</blockquote>
+<ul>
+<li><strong>sample_name</strong>: NIST7035.</li>
+<li><strong>barcode_sequence</strong>: TAAGGCGA.</li>
+<li><strong>lane</strong>: 001</li>
+<li><strong>read_number</strong>: R1</li>
+<li><strong>set_number</strong>: 001</li>
+</ul>
+<h3 id="illumina-fastq-read-naming-scheme">Illumina FASTQ read naming scheme</h3>
+<blockquote>
+<p>@HWI-D00119:50:H7AP8ADXX:1:1101:2100:2202 1:N:0:TAAGGCGA</p>
+</blockquote>
+<pre class="hljs"><code><div>@&lt;instrument&gt;:&lt;run_number&gt;:&lt;flowcell_ID&gt;:&lt;lane&gt;:&lt;tile&gt;:\
+&lt;x-pos&gt;:&lt;y-pos&gt; &lt;read&gt;:&lt;is_filtered&gt;:\
+&lt;control_number&gt;:&lt;index&gt;
+</div></code></pre>
+<ul>
+<li><strong>instrument</strong>: HWI-D00119</li>
+<li><strong>run_number</strong>: 50</li>
+<li><strong>flowcell_ID</strong>: H7AP8ADXX</li>
+<li><strong>lane</strong>: 1</li>
+<li><strong>tile</strong>: 1101</li>
+<li><strong>x-pos</strong>: 2100</li>
+<li><strong>y-pos</strong>: 2202</li>
+<li><strong>read</strong>: 1</li>
+<li><strong>is_filtered</strong>: N</li>
+<li><strong>control_number</strong>: 0</li>
+<li><strong>index</strong>: TAAGGCGA</li>
+</ul>
+<h2 id="sequencing-quality-control-fastqc">Sequencing quality control (FastQC)</h2>
+<h3 id="%F0%9F%8C%9F-hands-on-check-fastqc">🌟 Hands-on: Check FastQC</h3>
+<p>Check the quality of raw fastq file using FastQC:</p>
+<pre class="hljs"><code><div><span class="hljs-built_in">cd</span> 0_raw
+
+<span class="hljs-comment"># Basic syntax</span>
+fastqc &lt;file&gt; -o &lt;path/to/output&gt;
+
+<span class="hljs-comment"># Do for all file</span>
+<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> $(ls *.fastq.gz); <span class="hljs-keyword">do</span> fastqc <span class="hljs-variable">$i</span> -o 1_qc_checked; <span class="hljs-keyword">done</span>
+</div></code></pre>
+<h3 id="base-quality-score">Base Quality Score</h3>
+<p>Check quality score of sample4 (Fastqc sample4)
+Comments for this</p>
+<p>Example for a bad fastq Q score: sample1
+(Check Fastqc for sample1)</p>
+<h3 id="nucleotide-distribution">Nucleotide distribution.</h3>
+<h3 id="gc-contents-distribution">GC Contents distribution.</h3>
+<h3 id="duplication-rate">Duplication rate.</h3>
+<h3 id="k-mer-contents">K-mer contents</h3>
+<h3 id="per-tile-sequence-quality">Per tile sequence quality.</h3>
+<h2 id="read-trimming-and-filtering-trimmomatic">Read trimming and filtering (Trimmomatic)</h2>
+<p>http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf</p>
+<p>Things to do in Trimming:</p>
+<ul>
+<li>Quality trimming</li>
+<li>Adapter trimming</li>
+</ul>
+<p>Options:</p>
+<ul>
+<li>SE or PE?</li>
+<li>ILLUMINACLIP</li>
+<li>SLIDINGWINDOW</li>
+<li>LEADING</li>
+<li>TRAILING</li>
+<li>CROP</li>
+<li>HEADCROP</li>
+<li>MINLEN</li>
+</ul>
+<h3 id="%F0%9F%8C%9F-hands-on-trimming-raw-data">🌟 Hands-on: Trimming raw data</h3>
+<p><strong>Trimmomatic for single-end (SE) reads</strong></p>
+<pre class="hljs"><code><div>java -jar /opt/biotools/Trimmomatic-0.39/trimmomatic-0.39.jar SE \
+-phred33 \
+-threads 4 \
+-trimlog LowQuality_Reads.log \
+<span class="hljs-variable">$p_raw</span>/sample1/LowQuality_Reads.fastq.gz \
+<span class="hljs-variable">$p_trim</span>/sample1/LowQuality_Reads_trimmed.fastq.gz \
+SLIDINGWINDOW:10:22 \
+MINLEN:20
+</div></code></pre>
+<p><strong>Trimmomatic for paired-end (PE) reads</strong></p>
+<p>The flow of reads when trimming with Trimmomatic Paired End mode</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/cc0cdfae795b9c58631f7d954e34441f.png" alt=""></p>
+<pre class="hljs"><code><div><span class="hljs-comment"># Trimming reads with Trimmomatic. Notes that the adapter's at ILLUMINACLIP must be specified (try to figure out this by look into the tool's adapters dir)</span>
+trimmomatic PE \
+-phred33 \
+-threads 4 \
+-trimlog <span class="hljs-variable">$p_trim</span>/sample2/NIST7035.log \
+<span class="hljs-variable">$p_raw</span>/sample2/NIST7035_TAAGGCGA_L001_R1_001.fastq.gz \
+<span class="hljs-variable">$p_raw</span>/sample2/NIST7035_TAAGGCGA_L001_R2_001.fastq.gz \
+<span class="hljs-variable">$p_trim</span>/sample2/NIST7035_TAAGGCGA_L001_R1_001_trimmed_paired.fastq.gz \
+<span class="hljs-variable">$p_trim</span>/sample2/NIST7035_TAAGGCGA_L001_R1_001_trimmed_unpaired.fastq.gz \
+<span class="hljs-variable">$p_trim</span>/sample2/NIST7035_TAAGGCGA_L001_R2_001_trimmed_paired.fastq.gz \
+<span class="hljs-variable">$p_trim</span>/sample2/NIST7035_TAAGGCGA_L001_R2_001_trimmed_unpaired.fastq.gz \
+ILLUMINACLIP:/home/duydao/dnaseq_work/tools/trimmomatic/share/trimmomatic-0.39-2/adapters/NexteraPE-PE.fa:2:30:10:8:3:<span class="hljs-literal">true</span> \
+HEADCROP:10 \
+LEADING:3 \
+TRAILING:10 \
+SLIDINGWINDOW:4:30 \
+MINLEN:36
+</div></code></pre>
+<p>Remove unpaired reads</p>
+<pre class="hljs"><code><div><span class="hljs-built_in">cd</span> <span class="hljs-variable">$p_trim</span>/sample2/
+
+rm *_unpaired*
+</div></code></pre>
+<p>Check QC again after Trim:</p>
+<pre class="hljs"><code><div>fastqc NIST7035_TAAGGCGA_L001_R1_001_trimmed_paired.fastq.gz -o qc_checked/
+fastqc NIST7035_TAAGGCGA_L001_R2_001_trimmed_paired.fastq.gz -o qc_checked/
+</div></code></pre>
+<p>Is trimming really necessary now a day?</p>
+<h1 id="3-alignment-mapping-reads-to-reference-genome">3. Alignment: Mapping reads to reference genome</h1>
+<h3 id="%F0%9F%8C%9F-hands-on-align-with-bwa-mem">🌟 [Hands-on]: Align with BWA mem</h3>
+<p>First, Index the reference genome (We have done before)</p>
+<pre class="hljs"><code><div>bwa index -a bwtsw hs38DH.fa
+</div></code></pre>
+<h2 id="introduce-to-sambam-file">Introduce to SAM/BAM file</h2>
+<h3 id="%F0%9F%8C%9F-hands-on-align-with-bwa-mem">🌟 [Hands-on]: Align with BWA mem</h3>
+<pre class="hljs"><code><div><span class="hljs-comment"># Align with BWA mem, using 8 threads</span>
+bwa mem -t 4 \
+-R <span class="hljs-string">'@RG\tID:rg1\tSM:NA12878\tPL:illumina\tLB:lib1\tPU:H7AP8ADXX:1:TAAGGCGA'</span> \
+<span class="hljs-variable">$p_ref</span>/hg38/hs38DH.fa \
+<span class="hljs-variable">$p_trim</span>/sample2/NIST7035_TAAGGCGA_L001_R1_001_trimmed_paired.fastq.gz \
+<span class="hljs-variable">$p_trim</span>/sample2/NIST7035_TAAGGCGA_L001_R1_001_trimmed_paired.fastq.gz &gt; <span class="hljs-variable">$p_align</span>/sample2/NIST7035_aln.sam
+
+<span class="hljs-comment"># Out:</span>
+[main] Real time: 200.765 sec; CPU: 1621.182 sec
+</div></code></pre>
+<p>Read group?????????????</p>
+<h3 id="convert-sam-to-bam">Convert SAM to BAM</h3>
+<pre class="hljs"><code><div>samtools view -Sb NIST7035_aln.sam &gt; NIST7035_aln.bam
+</div></code></pre>
+<ul>
+<li>
+<p>Read mapping (BWA mem)</p>
+</li>
+<li>
+<p>Sorting and Indexing</p>
+</li>
+<li>
+<p>Mapping quality</p>
+</li>
+</ul>
+<p>Samtools bitflags
+https://broadinstitute.github.io/picard/explain-flags.html</p>
+<pre class="hljs"><code><div><span class="hljs-comment"># not primary alignment (0x100) &amp; supplementary alignment (0x800)</span>
+samtools view -F 0x900 NIST7035_aln.bam
+
+<span class="hljs-comment"># not primary alignment (0x100)</span>
+samtools view -f 0x100 NIST7035_aln.bam
+</div></code></pre>
+<p>Flagstat</p>
+<p>The flagstat function of SAMtools provides a summary of the number of records corresponding to each of the bit flags.</p>
+<pre class="hljs"><code><div>samtools flagstat NIST7035_aln.bam
+
+<span class="hljs-comment">#</span>
+27708663 + 0 <span class="hljs-keyword">in</span> total (QC-passed reads + QC-failed reads)
+27705266 + 0 primary
+0 + 0 secondary
+3397 + 0 supplementary
+0 + 0 duplicates
+0 + 0 primary duplicates
+27703875 + 0 mapped (99.98% : N/A)
+27700478 + 0 primary mapped (99.98% : N/A)
+27705266 + 0 paired <span class="hljs-keyword">in</span> sequencing
+13852633 + 0 read1
+13852633 + 0 read2
+0 + 0 properly paired (0.00% : N/A)
+27700478 + 0 with itself and mate mapped
+0 + 0 singletons (0.00% : N/A)
+1388964 + 0 with mate mapped to a different chr
+12 + 0 with mate mapped to a different chr (mapQ&gt;=5)
+</div></code></pre>
+<hr>
+<h1 id="4-mapped-reads-post-processing">4. Mapped reads post-processing</h1>
+<h2 id="%F0%9F%8C%9F-hands-on-use-gatk-to-analyze-data">🌟 [Hands-on]: Use GATK to analyze data</h2>
+<h2 id="sorting-and-marking-duplicate-inxdexing-the-bam-file">Sorting and marking duplicate, inxdexing the BAM file</h2>
+<h3 id="sortsam">SortSam</h3>
+<pre class="hljs"><code><div>java -jar <span class="hljs-variable">$picard</span> SortSam \
+--INPUT <span class="hljs-variable">$p_align</span>/sample2/NIST7035_aln.bam \
+--OUTPUT <span class="hljs-variable">$p_align</span>/sample2/NIST7035_sorted.bam \
+--SORT_ORDER coordinate
+</div></code></pre>
+<p>GATK SortSam</p>
+<pre class="hljs"><code><div>
+</div></code></pre>
+<h3 id="markduplicates">MarkDuplicates</h3>
+<p>Detect duplicate using Picard tools.</p>
+<pre class="hljs"><code><div>java -jar <span class="hljs-variable">$picard</span> MarkDuplicates \
+--INPUT <span class="hljs-variable">$p_align</span>/sample2/NIST7035_sorted.bam \
+--OUTPUT <span class="hljs-variable">$p_align</span>/sample2/NIST7035_dedup.bam \
+--METRICS_FILE <span class="hljs-variable">$p_align</span>/sample2/NIST7035.metrics
+</div></code></pre>
+<pre class="hljs"><code><div><span class="hljs-comment"># Full BAM file (with duplicate reads are marked)</span>
+samtools view NIST7035_dedup.bam <span class="hljs-comment">#27708663</span>
+
+<span class="hljs-comment"># BAM file with duplicate reads only</span>
+samtools view -f 0x400 NIST7035_dedup.bam
+samtools view -c -f 0x400 NIST7035_dedup.bam <span class="hljs-comment">#Count: 6059946 lines</span>
+</div></code></pre>
+<p><strong>PCR duplication &amp; Optical Duplication</strong></p>
+<pre class="hljs"><code><div><span class="hljs-comment"># Marked the read as an optical duplicated (DT:Z:SQ) &amp; PCR duplicated (DT:Z:LB)</span>
+java -jar <span class="hljs-variable">$picard</span> MarkDuplicates \
+--INPUT <span class="hljs-variable">$p_align</span>/sample2/NIST7035_sorted.bam \
+--OUTPUT <span class="hljs-variable">$p_align</span>/sample2/NIST7035_dedup.bam \
+--METRICS_FILE <span class="hljs-variable">$p_align</span>/sample2/NIST7035.metrics2 \
+--TAGGING_POLICY All
+<span class="hljs-comment">#</span>
+samtools view -f 0x400 NIST7035_dedup.bam | grep DT:Z:SQ | less -S
+</div></code></pre>
+<h3 id="picardbuildbamindex">Picard:BuildBamIndex</h3>
+<pre class="hljs"><code><div>java -jar <span class="hljs-variable">$picard</span> BuildBamIndex \
+--INPUT <span class="hljs-variable">$p_align</span>/sample2/NIST7035_dedup.bam
+</div></code></pre>
+<h2 id="realignment">Realignment</h2>
+<p>To perform realignment, we need to make use of not only the GATK executable, but also the coordinate-sorted and indexed BAM alignment data together with the reference sequence.
+<img src="https://camo.githubusercontent.com/c86fed92d711719f57c52da2dc9ce25cc17b583af845eb0fbf39458f753f70c3/68747470733a2f2f75732e762d63646e2e6e65742f353031393739362f75706c6f6164732f46696c6555706c6f61642f33382f3966303062613236373631353131393764636637613361643936666538662e706e67" alt=""></p>
+<p>Using GATK modules</p>
+<pre class="hljs"><code><div><span class="hljs-comment">#index fasta</span>
+samtools faidx <span class="hljs-variable">$p_ref</span>/hg38/hs38DH.fa
+<span class="hljs-comment">#CountReads</span>
+gatk CountReads \
+-R <span class="hljs-variable">$p_ref</span>/hg38/hs38DH.fa \
+-I <span class="hljs-variable">$p_align</span>/sample2/NIST7035_aln.bam
+</div></code></pre>
+<p>Create Sequence Dictionary</p>
+<pre class="hljs"><code><div>java -jar <span class="hljs-variable">$picard</span> CreateSequenceDictionary \
+--R <span class="hljs-variable">$p_ref</span>/hg38/hs38DH.fa \
+--O <span class="hljs-variable">$p_ref</span>/hg38/hs38DH.dict
+</div></code></pre>
+<h2 id="indelrealginer">IndelRealginer</h2>
+<pre class="hljs"><code><div><span class="hljs-comment"># Download vcf file containing known indels (gold-standard) &amp; the index</span>
+wget -c ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/hg38/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz
+
+wget -c ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/hg38/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz.tbi
+</div></code></pre>
+<pre class="hljs"><code><div>gatk RealignerTargetCreator
+</div></code></pre>
+<h2 id="base-quality-score-recalibration">Base Quality Score Recalibration</h2>
+<p>https://ftp.ncbi.nlm.nih.gov/snp/organisms/human_9606/VCF/</p>
+<pre class="hljs"><code><div><span class="hljs-comment"># Index vcf</span>
+tabix -p vcf <span class="hljs-variable">$p_ref</span>/hg38/All_20180418.vcf.gz 
+
+<span class="hljs-comment">#</span>
+gatk BaseRecalibrator \
+-R <span class="hljs-variable">$p_ref</span>/hg38/hs38DH.fa \
+-I <span class="hljs-variable">$p_align</span>/sample2/NIST7035_dedup.bam \
+-known-sites <span class="hljs-variable">$p_ref</span>/hg38/All_20180418.vcf.gz \
+-O <span class="hljs-variable">$p_align</span>/sample2/NIST7035-recal.table
+<span class="hljs-comment">#</span>
+
+</div></code></pre>
+<hr>
+<pre class="hljs"><code><div><span class="hljs-comment">#PATH</span>
+p_raw=<span class="hljs-string">'/DATA/bio06/duydao/dnaseq_work/work/1_raw'</span>
+p_trim=<span class="hljs-string">'/DATA/bio06/duydao/dnaseq_work/work/2_trimmed'</span>
+p_align=<span class="hljs-string">'/DATA/bio06/duydao/dnaseq_work/work/3_aligned'</span>
+p_ref=<span class="hljs-string">'/DATA/bio06/duydao/dnaseq_work/work/ref_genome'</span>
+
+<span class="hljs-comment">#PATH TO TOOLS</span>
+picard=<span class="hljs-string">'/DATA/bio06/duydao/opt/biotools/picard/build/libs/picard.jar'</span>
+</div></code></pre>
+<p>~~</p>
+<p><strong>Sample3</strong></p>
+<p>The data was collected from https://zenodo.org/record/2582555#.ZEDAFNJBxkg</p>
+<pre class="hljs"><code><div><span class="hljs-built_in">cd</span> 1_raw/
+<span class="hljs-built_in">cd</span> sample3/
+
+wget https://zenodo.org/record/2582555/files/SLGFSK-N_231335_r1_chr5_12_17.fastq.gz?download=1
+
+wget https://zenodo.org/record/2582555/files/SLGFSK-N_231335_r2_chr5_12_17.fastq.gz?download=1
+</div></code></pre>
+<h3 id="download-reference-genome-fasta">Download reference genome fasta:</h3>
+<pre class="hljs"><code><div><span class="hljs-built_in">cd</span> ref_genome
+wget https://zenodo.org/record/2582555/files/hg19.chr5_12_17.fa.gz?download=1
+gunzip 
+</div></code></pre>
+
+</body>
+</html>

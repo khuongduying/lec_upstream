@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>tools_requirement.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="install-tools">INSTALL TOOLS</h1>
+<h2 id="list-of-tools">List of tools</h2>
+<table>
+<thead>
+<tr>
+<th>Tools</th>
+<th>Description</th>
+<th>file format</th>
+<th>Preferences</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FastQC</td>
+<td>Sequencing quality control</td>
+<td>fastq</td>
+<td>https://www.bioinformatics.babraham.ac.uk/projects/fastqc/</td>
+</tr>
+<tr>
+<td>Trimmomatic</td>
+<td>Useful trimming tasks for illumina paired-end and single ended data.</td>
+<td>fastq</td>
+<td>https://github.com/usadellab/Trimmomatic</td>
+</tr>
+<tr>
+<td>BWA mem</td>
+<td>Mapped reads to reference genome</td>
+<td>sam/bam</td>
+<td>https://bio-bwa.sourceforge.net/bwa.shtml</td>
+</tr>
+<tr>
+<td>picard</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>IGV</td>
+<td>Vsual exploration of genomic data</td>
+<td>cram</td>
+<td>https://igv.org/</td>
+</tr>
+<tr>
+<td>GATK</td>
+<td>A genomic analysis toolkit focused on variant discovery.</td>
+<td></td>
+<td>https://gatk.broadinstitute.org/hc/en-us</td>
+</tr>
+<tr>
+<td>samtools</td>
+<td>Reading/writing/editing/indexing/viewing SAM/BAM/CRAM format</td>
+<td>sam/bam/cram</td>
+<td>http://www.htslib.org/</td>
+</tr>
+</tbody>
+</table>
+<h2 id="fastqc">FastQC</h2>
+<p>Download: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/</p>
+<pre class="hljs"><code><div><span class="hljs-comment">#Install &amp; unzip</span>
+wget https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v0.12.1.zip
+
+unzip fastqc_v0.12.1.zip
+
+<span class="hljs-comment"># Write at the end of the .bashrc file. This command will let you export the path to FastQC, and execute it everywhere</span>
+nano ~/.bashrc
+
+<span class="hljs-built_in">export</span> PATH=<span class="hljs-string">'path/to/FastQC/'</span>:<span class="hljs-variable">$PATH</span>
+<span class="hljs-comment"># For example: </span>
+<span class="hljs-built_in">export</span> PATH=<span class="hljs-string">'/home/duydao/dnaseq_work/tools/FastQC'</span>:<span class="hljs-variable">$PATH</span>
+
+<span class="hljs-built_in">source</span> ~/.bashrc
+
+<span class="hljs-comment">#Try it by running</span>
+fastqc
+</div></code></pre>
+<h2 id="trimmomatic">Trimmomatic</h2>
+<p>Download: https://anaconda.org/bioconda/trimmomatic/0.39/download/noarch/trimmomatic-0.39-hdfd78af_2.tar.bz2</p>
+<pre class="hljs"><code><div><span class="hljs-comment"># Move the file to tools/ and then unzip</span>
+mkdir trimmomatic
+tar -xvf trimmomatic-0.39-hdfd78af_2.tar.bz2 -C trimmomatic/
+<span class="hljs-comment">#</span>
+nano ~/.bashrc
+<span class="hljs-comment">#</span>
+<span class="hljs-built_in">export</span> PATH=<span class="hljs-string">'/home/duydao/dnaseq_work/tools/trimmomatic/bin/'</span>:<span class="hljs-variable">$PATH</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-built_in">source</span> ~/.bashrc
+</div></code></pre>
+<h2 id="bwa">BWA</h2>
+<pre class="hljs"><code><div>git <span class="hljs-built_in">clone</span> https://github.com/lh3/bwa.git
+
+<span class="hljs-built_in">cd</span> bwa/
+
+make
+
+<span class="hljs-comment"># export to PATH</span>
+nano ~/.bashrc
+
+<span class="hljs-built_in">export</span> PATH=<span class="hljs-string">'/home/duydao/dnaseq_work/tools/bwa/'</span>:<span class="hljs-variable">$PATH</span> <span class="hljs-comment">#Write at the end of the file.</span>
+
+<span class="hljs-built_in">source</span> ~/.bashrc
+
+<span class="hljs-comment"># done.</span>
+</div></code></pre>
+<h2 id="picard">Picard</h2>
+<p>Download: https://github.com/broadinstitute/picard/zipball/master</p>
+<pre class="hljs"><code><div><span class="hljs-comment"># Move picard to tools/ and then unzip</span>
+unzip
+<span class="hljs-built_in">cd</span> 
+./gradlew bundle
+
+</div></code></pre>
+<p>https://github.com/broadinstitute/picard/blob/master/README.md#building-picard</p>
+<h2 id="gatk">GATK</h2>
+<p>https://github.com/broadinstitute/gatk/releases</p>
+<pre class="hljs"><code><div>git <span class="hljs-built_in">clone</span> https://github.com/broadinstitute/gatk.git
+
+<span class="hljs-comment"># Install git-lfs</span>
+wget https://github.com/git-lfs/git-lfs/releases/download/v3.3.0/git-lfs-linux-amd64-v3.3.0.tar.gz
+
+tar -xvf git-lfs-linux-amd64-v3.3.0.tar.gz
+
+<span class="hljs-comment"># Set up java version 17</span>
+<span class="hljs-comment">## Download java 17</span>
+sudo apt install openjdk-17-jdk
+
+<span class="hljs-comment">## Switch to java 17</span>
+sudo update-alternatives --config java
+<span class="hljs-comment">## Type selection number 1,2,3,... that correspond to Java 17 and press Enter.</span>
+  Selection    Path                                         Priority   Status
+------------------------------------------------------------
+  0            /usr/lib/jvm/java-19-openjdk-amd64/bin/java   1911      auto mode
+* 1            /usr/lib/jvm/java-17-openjdk-amd64/bin/java   1711      manual mode
+  2            /usr/lib/jvm/java-18-openjdk-amd64/bin/java   1811      manual mode
+  3            /usr/lib/jvm/java-19-openjdk-amd64/bin/java   1911      manual mode
+
+--&gt; 1
+
+
+<span class="hljs-comment"># Build gatk</span>
+<span class="hljs-built_in">cd</span> gatk/
+sudo ./gradlew bundle <span class="hljs-comment"># This may take a while.</span>
+
+<span class="hljs-comment"># export to PATH</span>
+nano ~/.bashrc
+<span class="hljs-comment">#</span>
+<span class="hljs-built_in">export</span> PATH=<span class="hljs-string">'/home/duydao/dnaseq_work/tools/gatk/'</span>:<span class="hljs-variable">$PATH</span> <span class="hljs-comment">#Write at the end of the file.</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-built_in">source</span> ~/.bashrc
+<span class="hljs-comment"># done.</span>
+</div></code></pre>
+<h2 id="samtools">Samtools</h2>
+<pre class="hljs"><code><div>wget https://github.com/samtools/samtools/releases/download/1.17/samtools-1.17.tar.bz2
+
+tar -xvf samtools-1.17.tar.bz2 
+
+<span class="hljs-built_in">cd</span> samtools-1.17/
+
+./configure
+
+make
+
+make install
+
+<span class="hljs-comment"># export to PATH</span>
+nano ~/.bashrc
+<span class="hljs-comment">#</span>
+<span class="hljs-built_in">export</span> PATH=<span class="hljs-string">'/home/duydao/dnaseq_work/tools/samtools-1.17/'</span>:<span class="hljs-variable">$PATH</span> <span class="hljs-comment">#Write at the end of the file.</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-built_in">source</span> ~/.bashrc
+<span class="hljs-comment"># done.</span>
+</div></code></pre>
+<h2 id="tabix">Tabix</h2>
+<pre class="hljs"><code><div>wget https://github.com/samtools/htslib/releases/download/1.17/htslib-1.17.tar.bz2
+
+tar -xvf htslib-1.17.tar.bz2
+
+<span class="hljs-built_in">cd</span> htslib-1.17/
+make
+
+<span class="hljs-comment"># export to PATH</span>
+nano ~/.bashrc
+<span class="hljs-comment">#</span>
+<span class="hljs-built_in">export</span> PATH=<span class="hljs-string">'/home/duydao/dnaseq_work/tools/htslib-1.17/'</span>:<span class="hljs-variable">$PATH</span> <span class="hljs-comment">#Write at the end of the file.</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-built_in">source</span> ~/.bashrc
+<span class="hljs-comment"># done.</span>
+</div></code></pre>
+<h2 id="when-complete-installing-all-the-tools-our-tools-dir-will-look-like-this">When complete installing all the tools, our tools dir will look like this</h2>
+<pre class="hljs"><code><div>tree -L 1 tools
+
+<span class="hljs-comment">#</span>
+tools
+├── bwa
+├── FastQC
+├── gatk
+├── git-lfs-3.3.0
+├── htslib-1.17
+├── samtools-1.17
+└── trimmomatic
+</div></code></pre>
+
+</body>
+</html>
